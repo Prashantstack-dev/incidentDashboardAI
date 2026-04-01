@@ -1,6 +1,10 @@
 const dotenv = require("dotenv");
 dotenv.config({ path: require("path").resolve(__dirname, ".env") });
-console.log(process.env.ANTHROPIC_API_KEY);
+
+// using gemini sdk for this project to understand more browse https://github.com/googleapis/js-genai
+const { GoogleGenAI } = require("@google/genai");
+const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY});
+
 
 const express = require("express");
 const cors = require("cors");
@@ -10,12 +14,6 @@ const port = process.env.PORT || 3000; //dynamaic port assignment
 
 app.use(cors());
 app.use(express.json());
-
-const { Anthropic } = require("@anthropic-ai/sdk");
-// Initialize Anthropic Client
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
 
 app.get("/", (req, res) => {
   res.send("Hello World from Express!");
@@ -48,14 +46,20 @@ app.post("/api/summarize", async (req, res) => {
   }
 
   try {
-    const msg = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-latest",
-      max_tokens: 300,
-      system: "Summarize the following text concisely, focusing on key points.",
-      messages: [{ role: "user", content: text }]
+    const prompt = `Here are the current NSW fire incidents: ${text}. 
+Write a clear, plain English summary in bullet points. 
+Focus on locations, alert levels, and any safety advice. Keep it short and easy to read.`;
+
+    const response = await genAI.models.generateContent({
+      model: "gemini-2.0-flash-001",
+      contents: [{text: prompt}]
     });
 
-    res.json({ summary: msg.content[0].text });
+    const summary = response.text;   // ← this is how we get the text in the new SDK
+
+    console.log("AI Summary generated:", summary);
+
+    res.json({ summary });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to generate summary" });
