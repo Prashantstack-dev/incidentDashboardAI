@@ -37,12 +37,12 @@ const FireDataMap = () => {
 
     fetchData();
   }, []); // The empty dependency array ensures this runs once when the component mounts
-  const position = [-33.8688, 151.2093];
+  // 
   return (
     <MapContainer
       center={[-33.8688, 151.2093]}
       zoom={10}
-      style={{ height: "100vh", width: "100%" }} //
+      style={{ height: "60vh", width: "60%" }} //
       scrollWheelZoom={true}
     >
       {/*  TileLayer and GeoJSON  */}
