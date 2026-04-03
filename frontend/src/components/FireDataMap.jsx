@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+// import {  } from "react";
 import { MapContainer, TileLayer, Marker, Popup, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-const FireDataMap = () => {
-  const [geojsonData, setGeojsonData] = useState(null);
-  const [error, setError] = useState(null);
+const FireDataMap = ({geojsonData }) => {
+  
   //a function to customize the style of each feature
   const onEachFeature = (feature, layer) => {
     if (feature.properties && feature.properties.title) {
@@ -18,26 +17,27 @@ const FireDataMap = () => {
     fillOpacity: 0.7
   }
   
-  useEffect(() => {
-    // Define an async function to fetch your data
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:3000/api/majorincidents"
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setGeojsonData(data);
-      } catch (error) {
-        setError(error.message);
-      }
-    };
+  // useEffect(() => {
+  //   // Define an async function to fetch your data
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         "https://corsproxy.io/?https://www.rfs.nsw.gov.au/feeds/majorIncidents.json"
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
+  //       const data = await response.json();
+  //       setGeojsonData(data);
+  //       console.log(data);
+  //     } catch (error) {
+  //       setError(error.message);
+  //     }
+  //   };
 
-    fetchData();
-  }, []); // The empty dependency array ensures this runs once when the component mounts
-  // 
+  //   fetchData();
+  // }, []); // The empty dependency array ensures this runs once when the component mounts
+  // // 
   return (
     <MapContainer
       center={[-33.8688, 151.2093]}

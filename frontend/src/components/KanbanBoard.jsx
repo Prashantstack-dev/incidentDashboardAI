@@ -1,6 +1,5 @@
-import { useState } from "react";
 
-const KanbanBoard = () => {
+const KanbanBoard = ({geojsonData }) => {
   const handleDragStart = (e, id) => {
     e.dataTransfer.setData("text/plain", id);
   };
@@ -8,46 +7,49 @@ const KanbanBoard = () => {
     e.preventDefault();
   };
 
-  const handleDrop = (e, column) => {
-    e.preventDefault();
-    const droppedId = e.dataTransfer.getData("text/plain");
-    console.log("Dropped ID:", droppedId);
-    const actualDrop = incidents.map((incident) => {
-      if (incident.id === droppedId) {
-        return { ...incident, status: column };
-      } else {
-        return incident;
-      }
-    });
-    setIncidents(actualDrop);
-  };
+const handleDrop = async (e, column) => {
+  e.preventDefault();
+  const droppedId = e.dataTransfer.getData("text/plain");
 
-  const [incidents, setIncidents] = useState([
-    {
-      id: "INC-001",
-      title: "API Gateway Down",
-      description: "Users receiving 502 errors",
-      severity: "Critical",
-      status: "open",
-      assignee: "Alice",
-      createdAt: new Date().toLocaleDateString(),
-      service: "Payments API"
-    },
-    {
-      id: "INC-002",
-      title: "Login failures",
-      description: "OAuth timeout errors",
-      severity: "High",
-      status: "inProgress",
-      assignee: "Bob",
-      createdAt: new Date().toLocaleDateString(),
-      service: "Auth Service"
-    }
-  ]);
-  const colors = { Critical: "#ef4444", High: "#f97316", Medium: "#eab308" };
+   //Save previous state
+  // const previousIncidents = [...incidents];
 
-  const columns = ["open", "inProgress", "resolved"];
+  // // Optimistically update UI
+  // const updatedIncidents = incidents.map((feature) =>
+  //   feature.id === droppedId ? { ...feature, status: column } : feature
+  // );
+  // setIncidents(updatedIncidents);
 
+  // try {
+  //   // Simulate async server update (replace with real API call)
+  //   const response = await fetch(`http://localhost:3000/api/incidents/${droppedId}`, {
+  //     method: "PATCH",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ status: column }),
+  //   });
+
+  //   if (!response.ok) throw new Error("Server update failed");
+
+  //   //  Optionally update state with server response
+  //   const serverData = await response.json();
+  //   setIncidents((prev) =>
+  //     prev.map((feature) =>
+  //       feature.id === droppedId ? { ...feature, ...serverData } : feature
+  //     )
+  //   );
+  // } catch (error) {
+  //   console.error(error);
+  //   //  Rollback UI if server update fails
+  //   setIncidents(previousIncidents);
+  //   alert("Failed to move feature. Please try again.");
+  // }
+};
+
+
+  // const colors = { Critical: "#ef4444", High: "#f97316", Medium: "#eab308" };
+
+  const columns = ["Emergency Warning", "Watch and Act", "Advice", "Not Applicable"]
+  if (!geojsonData) return <p>Loading incidents...</p>
   return (
     <>
       <div style={{ display: "flex", gap: "1rem" }}>
@@ -63,23 +65,24 @@ const KanbanBoard = () => {
               background: "#3966c9",
               borderRadius: "12px",
               padding: "12px",
-              overflowY: "auto"
+              overflowY: "auto",
+              maxHeight: "400px"
             }}
           >
             <h3>
               {column} :
               {
-                incidents.filter((incident) => incident.status === column)
+                geojsonData.features.filter((feature) => feature.properties.category === column)
                   .length
               }
             </h3>
-            {incidents
-              .filter((incident) => incident.status === column)
-              .map((incident) => (
+            {geojsonData.features
+              .filter((feature) => feature.properties.category === column)
+              .map((feature) => (
                 <div
-                  key={incident.id}
+                  key={feature.properties.guid}
                   draggable='true'
-                  onDragStart={(e) => handleDragStart(e, incident.id)}
+                  onDragStart={(e) => handleDragStart(e, feature.properties.title)}
                   style={{
                     background: "#1f2937",
                     borderRadius: "10px",
@@ -100,20 +103,20 @@ const KanbanBoard = () => {
                   }}
                 >
                   <p>
-                    {incident.assignee}: {incident.createdAt}
+                    {feature.properties.title}: {feature.properties.link}
                   </p>
-                  <p>Description: {incident.description}</p>
+                  <p>Description: {feature.properties.description}</p>
                   <span
                     style={{
                       padding: "4px 8px",
                       fontWeight: "bold",
                       borderRadius: "999px",
-                      background: colors[incident.severity],
+                      // background: colors[feature.severity],
                       cursor: "grab"
                     }}
                   >
                     Severity:
-                    {incident.severity}
+                    {feature.severity}
                   </span>
                 </div>
               ))}
@@ -125,3 +128,4 @@ const KanbanBoard = () => {
 };
 
 export default KanbanBoard;
+
