@@ -22,39 +22,32 @@ const KanbanBoard = () => {
     setIncidents(actualDrop);
   };
 
-  //     const [incidents, setIncidents] = useState([
-  //   { id: "INC-001", title: "Server down", severity: "critical", status: "open" },
-  //   { id: "INC-002", title: "Login failing", severity: "high", status: "inProgress" },
-  //   { id: "INC-003", title: "CPU spike", severity: "medium", status: "resolved" },
-  //   { id: "INC-004", title: "Memory leak", severity: "high", status: "open" },
-  // ])
-
   const [incidents, setIncidents] = useState([
     {
       id: "INC-001",
       title: "API Gateway Down",
       description: "Users receiving 502 errors",
-      severity: "critical",
+      severity: "Critical",
       status: "open",
       assignee: "Alice",
-      createdAt: Date.now().toString(),
+      createdAt: new Date().toLocaleDateString(),
       service: "Payments API"
     },
     {
       id: "INC-002",
       title: "Login failures",
       description: "OAuth timeout errors",
-      severity: "high",
+      severity: "High",
       status: "inProgress",
       assignee: "Bob",
-      createdAt: "2026-04-01T11:30:00Z",
+      createdAt: new Date().toLocaleDateString(),
       service: "Auth Service"
     }
   ]);
-  const colors = { critical: "red", high: "orange", medium: "yellow" };
+  const colors = { Critical: "red", High: "orange", Medium: "yellow" };
 
   const columns = ["open", "inProgress", "resolved"];
-
+  
   return (
     <>
       <div style={{ display: "flex", gap: "1rem" }}>
@@ -65,12 +58,13 @@ const KanbanBoard = () => {
             onDrop={(e) => handleDrop(e, column)}
             style={{
               flex: 1,
-              border: "1px solid ",
+              border: "1px solid black",
+              backgroundColor: "#cfb8b8", 
               padding: "1rem",
               cursor: "grab"
             }}
           >
-            <h3>{column}</h3>
+            <h3>{column}: {incidents.filter(incident => incident.status === column).length}</h3>
             {incidents
               .filter((incident) => incident.status === column)
               .map((incident) => (
@@ -81,18 +75,19 @@ const KanbanBoard = () => {
                 >
                   <p>
                     {incident.assignee}: {incident.createdAt}
-                    {incident.description}
                   </p>
+                  <p>Description: {incident.description}</p>
                   <span
                     style={{
                       padding: "8px",
                       margin: "8px 0",
-                      background: colors[incident.severity] || "#866767",
+                      background: colors[incident.severity],
                       cursor: "grab"
                     }}
-                  >
+                  >Severity: 
                     {incident.severity}
                   </span>
+                 
                 </div>
               ))}
           </div>
