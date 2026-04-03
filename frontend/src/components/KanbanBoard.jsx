@@ -44,10 +44,10 @@ const KanbanBoard = () => {
       service: "Auth Service"
     }
   ]);
-  const colors = { Critical: "red", High: "orange", Medium: "yellow" };
+  const colors = { Critical: "#ef4444", High: "#f97316", Medium: "#eab308" };
 
   const columns = ["open", "inProgress", "resolved"];
-  
+
   return (
     <>
       <div style={{ display: "flex", gap: "1rem" }}>
@@ -58,13 +58,21 @@ const KanbanBoard = () => {
             onDrop={(e) => handleDrop(e, column)}
             style={{
               flex: 1,
-              border: "1px solid black",
-              backgroundColor: "#cfb8b8", 
-              padding: "1rem",
-              cursor: "grab"
+              display: "flex",
+              flexDirection: "column",
+              background: "#3966c9",
+              borderRadius: "12px",
+              padding: "12px",
+              overflowY: "auto"
             }}
           >
-            <h3>{column}: {incidents.filter(incident => incident.status === column).length}</h3>
+            <h3>
+              {column} :
+              {
+                incidents.filter((incident) => incident.status === column)
+                  .length
+              }
+            </h3>
             {incidents
               .filter((incident) => incident.status === column)
               .map((incident) => (
@@ -72,6 +80,24 @@ const KanbanBoard = () => {
                   key={incident.id}
                   draggable='true'
                   onDragStart={(e) => handleDragStart(e, incident.id)}
+                  style={{
+                    background: "#1f2937",
+                    borderRadius: "10px",
+                    padding: "12px",
+                    marginBottom: "10px",
+                    border: "1px solid #374151",
+                    cursor: "grab",
+                    transition: "all 0.2s ease"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 20px rgba(0,0,0,0.4)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "none";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
                 >
                   <p>
                     {incident.assignee}: {incident.createdAt}
@@ -79,15 +105,16 @@ const KanbanBoard = () => {
                   <p>Description: {incident.description}</p>
                   <span
                     style={{
-                      padding: "8px",
-                      margin: "8px 0",
+                      padding: "4px 8px",
+                      fontWeight: "bold",
+                      borderRadius: "999px",
                       background: colors[incident.severity],
                       cursor: "grab"
                     }}
-                  >Severity: 
+                  >
+                    Severity:
                     {incident.severity}
                   </span>
-                 
                 </div>
               ))}
           </div>
