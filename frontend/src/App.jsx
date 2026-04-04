@@ -8,10 +8,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFire } from "@fortawesome/free-solid-svg-icons";
 // import { faTrello } from '@fortawesome/free-brands-svg-icons';
 import { useEffect,useState } from "react";
+import GeoCards from "./components/GeoCards";
+import Button from "./components/Button";
 
 const App = () => {
   const [geojsonData, setGeojsonData] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   useEffect(() => {
     // Define an async function to fetch your data
     const fetchData = async () => {
@@ -39,15 +43,13 @@ const App = () => {
         style={{ display: "flex", flexDirection: "column", height: "100vh" }}
       >
         {/* Header */}
-        <div
-          style={{
+        <div style={{
             padding: "7px",
             border: "2px solid black",
             background: "#020617",
             color: "#e5e7eb"
-          }}
-        >
-          <FontAwesomeIcon
+          }}>
+          <FontAwesomeIcon className="fire"
             icon={faFire}
             style={{ color: "#ef4444", fontSize: "18px" }}
           />
@@ -67,7 +69,10 @@ const App = () => {
             background: "#0f172a"
           }}
         >
-          <KanbanBoard geojsonData={geojsonData}/>
+          {/* <KanbanBoard geojsonData={geojsonData}/> */}
+          <Button setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory} />
+          <GeoCards geojsonData={geojsonData} selectedCategory={selectedCategory}/>
+          
         </div>
       </div>
     </>
