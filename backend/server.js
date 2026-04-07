@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Hello World from Express!");
+  res.send("Hello World from Express trying to get kanban!");
 });
 
 app.get("/api/majorincidents", async (req, res) => {
@@ -69,3 +69,5 @@ Focus on locations, alert levels, and any safety advice. Keep it short and easy 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+

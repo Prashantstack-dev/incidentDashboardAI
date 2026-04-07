@@ -24,7 +24,7 @@ h3 {
 }
 
 /* Button component style */
-.button{
+.button, .active{
   margin: 10px;
   padding: 10px;
   background: midnightblue;
@@ -37,6 +37,12 @@ h3 {
 .button:hover{
 box-shadow:4px 4px 12px rgba(221, 170, 170, 0.5);
  background-color: #5a6268;
+}
+
+.active{
+ background-color: #3e8e41; /* Darker green */
+  box-shadow: inset 0 3px 5px rgba(189, 62, 62, 0.2);
+  transform: translateY(2px); 
 }
 /* Card components style */
 .geo-cards-container {
